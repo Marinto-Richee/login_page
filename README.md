@@ -33,3 +33,4 @@ statements.
 
 ## File Structure
 
+![file structure](assests/scrshots/image.png"Structure")
