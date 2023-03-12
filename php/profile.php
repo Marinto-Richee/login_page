@@ -1,25 +1,33 @@
 <?php
-// connect to MongoDB
-$mongo = new MongoDB\Driver\Manager('mongodb://localhost:27017');
+session_start();
+include("./db.php");
 
-// get the username from the POST data
-$username = $_POST['username'];
+$redis = new Redis();
+$redis->connect(REDIS_HOST, 6379);
 
-// create a query to retrieve the user's profile data from MongoDB
-$filter = ['username' => $username];
-$options = [];
-$query = new MongoDB\Driver\Query($filter, $options);
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+  // Handle GET request
+  $session_key = $_GET['session_key'];
+  $session_value = $redis->get('session:' . $session_key);
+  // check if session data is not empty and valid
+  if (!empty($session_value)) {
+    // update session expiry time
+    $redis->expire('session:' . $session_key, 3600);
+    $session_data = json_decode($session_value);
+    echo json_encode(array('success' => true, 'username' => $session_data->username));
+    // session is valid
+    
+  } else {
+    // destroy session
+    //$redis->del($session_key);
+    echo json_encode(array('success' => false,'message' => 'Session expired.','session_key' => $session_key));
+  }  
+  
+}
 
-// execute the query
-$cursor = $mongo->executeQuery('test.profile', $query);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  echo json_encode(array('success' => true));
+  $session_key = $_POST['session_key'];
+}
 
-// retrieve the user's profile data from the cursor
-$userData = $cursor->toArray()[0];
-
-// return the user's profile data as a JSON object
-echo json_encode([
-	'age' => $userData->age,
-	'dob' => $userData->dob,
-	'contact_address' => $userData->contact_address
-]);
 ?>

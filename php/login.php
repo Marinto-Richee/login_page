@@ -2,21 +2,17 @@
 // start session
 session_start();
 include("./db.php");
-
 #require_once 'vendor/autoload.php';
 // include Redis client library
 #require_once 'predis/autoload.php';
-
 // create Redis client
 $redis = new Redis();
 $redis->connect(REDIS_HOST, 6379);
 #$redis->auth('REDIS_PASSWORD');
-
 // retrieve username and password from POST request
 $username = $_POST['username'];
 $password = $_POST['password'];
 // perform database query using prepared statement
-
 try {
 
     $conn = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
@@ -26,7 +22,12 @@ try {
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
-
+// check if username and password are valid
+if (empty($username)|| empty($password) ) {
+    $response = array('success' => false, 'message' => 'Please fill in all fields.');
+    echo json_encode($response);  
+    exit();
+}
 // check if user exists
 if (!$user) {
     // return error message as JSON
