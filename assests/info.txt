@@ -1,0 +1,25 @@
+
+CREATE TABLE users (
+  id INT NOT NULL AUTO_INCREMENT,
+  username VARCHAR(50) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  created_at DATETIME NOT NULL,
+  PRIMARY KEY (id)
+);
+
+
+https://dev.mysql.com/doc/refman/8.0/en/default-privileges.html
+mysql -u root -p
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'root-password';
+
+/etc/init.d/apache2 restart
+
+/var/www/html
+sudo apt-get install php-mongodb
+sudo service apache2 reload
+/etc/php/8.1/apache2/php.ini 
+https://github.com/rrazvanrraducanu/phpubuntu
+
+sudo systemctl start redis-server
+redis-cli
