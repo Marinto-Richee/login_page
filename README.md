@@ -33,4 +33,4 @@ statements.
 
 ## File Structure
 
-![file structure](assests/scrshots/image.png"Structure")
+![image](https://user-images.githubusercontent.com/65499285/224525433-5f681301-1f65-4db7-9277-09486a5b2e53.png)
