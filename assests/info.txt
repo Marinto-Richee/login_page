@@ -23,3 +23,5 @@ https://github.com/rrazvanrraducanu/phpubuntu
 
 sudo systemctl start redis-server
 redis-cli
+
+https://docs.google.com/document/d/1QyB1oIwVLov0nMmnunlpoZEas3nineU-jzL77YA-RPs/edit
