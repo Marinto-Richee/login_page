@@ -13,6 +13,11 @@ $username = $_POST['username'];
 $password = $_POST['password'];
 
 // check if username and password are valid
+if (empty($username)|| empty($password) ) {
+    $response = array('success' => false, 'message' => 'Please fill in all fields.');
+    echo json_encode($response);  
+    exit();
+}
 // perform database query using prepared statement
 $dsn = 'mysql:host=localhost;dbname=mydatabase;charset=utf8mb4';
 $username_db = 'myusername';

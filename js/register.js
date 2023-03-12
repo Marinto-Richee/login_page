@@ -1,6 +1,4 @@
 $(document).ready(function() {
-
-  alert('Welcome to my webapp');
   // handle form submission
   $('#signup-form').submit(function(e) {
     e.preventDefault(); // prevent default form submission
