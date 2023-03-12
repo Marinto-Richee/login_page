@@ -1,35 +1,45 @@
-$(document).ready(function() {
+$(document).ready(function () {
 	// get the current user's username from local storage
 	var session_key = localStorage.getItem('session_key');
+
 	// get the user's profile data from MongoDB
 	$.ajax({
 		url: './php/profile.php',
 		type: 'GET',
-		data: { session_key: session_key},
+		data: { session_key: session_key },
 		dataType: 'json',
-		success: function(data) {
+		success: function (data) {
 			// populating the username from the database
-			if(data.success)
-			{
+			if (data.success) {
 				$('#username').val(data.username);
 
-			}else{
+			} else {
 				localStorage.removeItem('session_key');
 				window.location.href = './login.html';
 			}
 		},
-		error: function() {
+		error: function () {
 			alert('Failed to get user profile data.');
 		}
 	});
 
 	// handle form submission
-	$('#profile-form').submit(function(event) {
+	$('#profile-form').submit(function (event) {
+
 		event.preventDefault();
 		var session_key = localStorage.getItem('session_key');
+
 		// get the form data
-		var age = $('#age').val();
+		//var age = $('#age').val();
 		var dob = $('#dob').val();
+
+		//Calculating Age with DOB
+		var date = new Date();
+		var dob_ = new Date(dob);
+		var y2 = date.getFullYear();
+		var y1 = dob_.getFullYear();
+		var age = y2 - y1;
+
 		var contactAddress = $('#contact-address').val();
 
 		// send the updated profile data to MongoDB
@@ -43,10 +53,10 @@ $(document).ready(function() {
 				dob: dob,
 				contactAddress: contactAddress
 			},
-			success: function() {
+			success: function () {
 				alert('Profile updated successfully.');
 			},
-			error: function() {
+			error: function () {
 				alert('Failed to update profile.');
 			}
 		});
