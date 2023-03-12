@@ -1,9 +1,15 @@
 <?php
+
 session_start();
 include("./db.php");
-
+//require("vendor/autoload.php");
+$manager = new MongoDB\Driver\Manager('mongodb://127.0.0.1:27017');
 $redis = new Redis();
 $redis->connect(REDIS_HOST, 6379);
+// $client = new MongoClient();
+//$client = new MongoDB\Client('mongodb://127.0.0.1:27017');
+//$mdb = $cli->webappdb;
+$collection = 'userdb.people';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
   // Handle GET request
@@ -14,7 +20,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // update session expiry time
     $redis->expire('session:' . $session_key, 3600);
     $session_data = json_decode($session_value);
-    echo json_encode(array('success' => true, 'username' => $session_data->username));
+    // Set up query criteria
+    $filter = ['username' => $session_data->username];
+    // Set up options
+    $options = ['limit' => 1];
+    // Set up query object
+    $query = new MongoDB\Driver\Query($filter, $options);
+
+    // Execute query and get cursor
+    $cursor = $manager->executeQuery($collection , $query);
+
+    // Get matching document
+    $document = current($cursor->toArray());
+
+    // Print document
+    //print_r($document);
+
+
+    echo json_encode(array('success' => true, 'username' => $session_data->username,'dob'=>$document->dob,'contactAddress'=>$document->contactAddress));
     // session is valid
     
   } else {
@@ -26,6 +49,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  echo json_encode(array('success' => true));
+  //echo json_encode(array('success' => true));
   $session_key = $_POST['session_key'];
+  $username =$_POST['username'];
+  $dob_str=$_POST['dob'];
+  $age_str=$_POST['age'];
+  $contactAddress=$_POST['contactAddress'];
+  $date_timestamp = strtotime($dob_str);
+  $date_obj = date('Y-m-d H:i:s', $date_timestamp);
+  
+  //$query = new MongoDB\Driver\Query(array('username' => $username));
+  //$cursor = $manager->executeQuery('mydb.profiles', $query);  
+
+  $filter = ['username' => $username];
+  $update = ['$set' => ['dob' => $dob_str,'age'=>$age_str,'contactAddress' => $contactAddress]];
+
+  $options = [
+    'multi' => false,   // update only the first matching document
+    'upsert' => true   // do not insert a new document if no matching document is found
+  ];
+  // specify the collection to update
+
+
+  // build the update query object
+  $query = new MongoDB\Driver\BulkWrite();
+  $query->update($filter, $update, $options);
+
+  // execute the update query
+  $result = $manager->executeBulkWrite($collection, $query);
+  echo json_encode(array('success' => false,'message' => 'Successfully Updated1...'));
+
+
 }
+
+?>
