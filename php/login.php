@@ -31,12 +31,12 @@ if (empty($username)|| empty($password) ) {
 // check if user exists
 if (!$user) {
     // return error message as JSON
-    echo json_encode(array('success' => false, 'message' => 'Invalid username or password1.'));
+    echo json_encode(array('success' => false, 'message' => 'Invalid username'));
     exit();
 }
 
 if (!password_verify($password, $user['password'])) {
-    echo json_encode(array('success' => false, 'message' => 'Invalid username or password2.'));
+    echo json_encode(array('success' => false, 'message' => 'Invalid password'));
     exit();
 }
 

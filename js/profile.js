@@ -1,10 +1,6 @@
 $(document).ready(function() {
 	// get the current user's username from local storage
 	var session_key = localStorage.getItem('session_key');
-	alert(session_key);
-	// populate the username field in the form
-	//$('#username').val(username);
-
 	// get the user's profile data from MongoDB
 	$.ajax({
 		url: './php/profile.php',
@@ -12,8 +8,7 @@ $(document).ready(function() {
 		data: { session_key: session_key},
 		dataType: 'json',
 		success: function(data) {
-			// populate the form with the user's profile data
-
+			// populating the username from the database
 			if(data.success)
 			{
 				$('#username').val(data.username);
@@ -22,8 +17,6 @@ $(document).ready(function() {
 				localStorage.removeItem('session_key');
 				window.location.href = './login.html';
 			}
-			//alert(data.session_key);
-			//alert(data.message);
 		},
 		error: function() {
 			alert('Failed to get user profile data.');

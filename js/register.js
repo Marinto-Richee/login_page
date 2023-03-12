@@ -1,9 +1,8 @@
-$(document).ready(function() {
+$(document).ready(function () {
   // handle form submission
-  $('#signup-form').submit(function(e) {
-    e.preventDefault(); // prevent default form submission
-
-    // get form data
+  $('#signup-form').submit(function (e) {
+    e.preventDefault(); 
+    // get form data from the user inputs
     var formData = {
       username: $('#username').val(),
       email: $('#email').val(),
@@ -11,13 +10,15 @@ $(document).ready(function() {
       confirm_password: $('#confirm-password').val()
     };
 
-    // send form data to server
+
+
+    // send form data to server using ajax
     $.ajax({
       url: './php/register.php',
       type: 'POST',
       data: formData,
       dataType: 'json',
-      success: function(response) {
+      success: function (response) {
         if (response.success) {
           alert('Signup successful!');
           window.location.href = 'login.html';
@@ -25,7 +26,7 @@ $(document).ready(function() {
           alert(response.message);
         }
       },
-      error: function() {
+      error: function () {
         alert('Error submitting form!');
       }
     });
